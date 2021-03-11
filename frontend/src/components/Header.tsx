@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import styled from '@emotion/styled';
 
 import { UserIcon } from './Icons';
@@ -57,13 +57,19 @@ const A2 = styled.a`
   }
 `;
 
-export const Header = () => (
-  <Div>
-    <A1 href="/">Q & A</A1>
-    <Input type="text" placeholder="Search..." />
-    <A2 href="/signin">
-      <UserIcon />
-      <span>Sign In</span>
-    </A2>
-  </Div>
-);
+export const Header = () => {
+  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(e.currentTarget.value);
+  };
+
+  return (
+    <Div>
+      <A1 href="/">Q & A</A1>
+      <Input type="text" placeholder="Search..." onChange={handleSearchInputChange} />
+      <A2 href="/signin">
+        <UserIcon />
+        <span>Sign In</span>
+      </A2>
+    </Div>
+  );
+};
