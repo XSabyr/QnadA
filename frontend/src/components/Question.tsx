@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
 
 import { QuestionData } from '../QuestionsData';
 import { gray2, gray3 } from './Styles';
@@ -16,6 +17,8 @@ const Div1 = styled.div`
 const Div2 = styled.div`
   padding: 10px 0px;
   font-size: 19px;
+  text-decoration: none;
+  color: ${gray2};
 `;
 
 const Div3 = styled.div`
@@ -32,7 +35,9 @@ const Div4 = styled.div`
 
 export const Question: FC<Props> = ({ data, showContent = true }) => (
   <Div1>
-    <Div2>{data.title}</Div2>
+    <Div2>
+      <Link to={`/questions/${data.questionId}`}>{data.title}</Link>
+    </Div2>
     {showContent && (
       <Div4>{data.content.length > 50 ? `${data.content.substring(0, 50)}...` : data.content}</Div4>
     )}

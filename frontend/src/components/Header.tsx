@@ -1,5 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
 
 import { UserIcon } from './Icons';
 import { fontFamily, fontSize, gray1, gray2, gray5 } from './Styles';
@@ -18,7 +19,7 @@ const Div = styled.div`
   box-shadow: 0 3px 7px 0 rgba(110, 112, 114, 0.21);
 `;
 
-const A1 = styled.a`
+const Link1 = styled.div`
   font-size: 24px;
   font-weight: bold;
   color: ${gray1};
@@ -41,7 +42,7 @@ const Input = styled.input`
   }
 `;
 
-const A2 = styled.a`
+const Link2 = styled.div`
   font-family: ${fontFamily};
   font-size: ${fontSize};
   padding: 5px 10px;
@@ -64,12 +65,16 @@ export const Header = () => {
 
   return (
     <Div>
-      <A1 href="/">Q & A</A1>
+      <Link1>
+        <Link to="/">Q & A</Link>
+      </Link1>
       <Input type="text" placeholder="Search..." onChange={handleSearchInputChange} />
-      <A2 href="/signin">
-        <UserIcon />
-        <span>Sign In</span>
-      </A2>
+      <Link2>
+        <Link to="/signin">
+          <UserIcon />
+          <span>Sign In</span>
+        </Link>
+      </Link2>
     </Div>
   );
 };

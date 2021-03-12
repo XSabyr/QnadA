@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import styled from '@emotion/styled';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { QuestionList } from './QuestionList';
 import { Page } from './Page';
@@ -19,7 +20,7 @@ const DivQuestionLoading = styled.div`
   font-style: italic;
 `;
 
-export const HomePage = () => {
+export const HomePage: FC<RouteComponentProps> = ({ history }) => {
   const [questions, setQuestions] = useState<QuestionData[] | null>(null);
   const [questionsLoading, setQuestionsLoading] = useState(true);
 
@@ -34,7 +35,7 @@ export const HomePage = () => {
   }, []);
 
   const handleAskQuestionClick = () => {
-    console.log('TODO - move to the ask page');
+    history.push('/ask');
   };
 
   return (
