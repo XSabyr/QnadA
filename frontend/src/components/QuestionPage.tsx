@@ -1,10 +1,12 @@
 import React, { FC, useState, useEffect, Fragment } from 'react';
 import { Page } from './Page';
 import { RouteComponentProps } from 'react-router-dom';
-import { QuestionData, getQuestion } from '../QuestionsData';
+import { QuestionData, getQuestion, postAnswer } from '../QuestionsData';
 import styled from '@emotion/styled';
 import { gray3, gray6 } from './Styles';
 import { AnswerList } from './AnswerList';
+import { Form, required, minLength, Values } from './Form';
+import { Field } from './Field';
 
 interface RouteParams {
   questionId: string;
@@ -35,6 +37,10 @@ const Div3 = styled.div`
   color: ${gray3};
 `;
 
+const DivForForm = styled.div`
+  margin-top: 20px;
+`;
+
 export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
   const [question, setQuestion] = useState<QuestionData | null>(null);
 
@@ -50,6 +56,16 @@ export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({ match }) =>
     }
   }, [match.params.questionId]);
 
+  const handleSubmit = async (values: Values) => {
+    const result = await postAnswer({
+      questionId: question!.questionId,
+      content: values.content,
+      userName: 'Fred',
+      created: new Date(),
+    });
+    return { success: result ? true : false };
+  };
+
   return (
     <Page>
       <Div1>
@@ -63,6 +79,18 @@ export const QuestionPage: FC<RouteComponentProps<RouteParams>> = ({ match }) =>
               } on ${question.created.toLocaleDateString()} ${question.created.toLocaleTimeString()}`}
             </Div3>
             <AnswerList data={question.answers} />
+            <DivForForm>
+              <Form
+                submitCaption="Submit your answer"
+                validationRules={{
+                  content: [{ validator: required }, { validator: minLength, arg: 50 }],
+                }}
+                onSubmit={handleSubmit}
+                failureMessage="There was a problem with your answer"
+                successMessage="Your answer was successfully submitted">
+                <Field name="content" label="Your Answer" type="TextArea" />
+              </Form>
+            </DivForForm>
           </Fragment>
         )}
       </Div1>

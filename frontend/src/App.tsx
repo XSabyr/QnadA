@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import styled from '@emotion/styled';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 
-import { Header } from './components/Header';
+import { HeaderWithRouter as Header } from './components/Header';
 import { HomePage } from './components/HomePage';
 import { fontFamily, fontSize, gray2 } from './components/Styles';
 

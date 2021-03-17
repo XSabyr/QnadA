@@ -1,6 +1,6 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, FC, useState, FormEvent } from 'react';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { UserIcon } from './Icons';
 import { fontFamily, fontSize, gray1, gray2, gray5 } from './Styles';
@@ -19,7 +19,7 @@ const Div = styled.div`
   box-shadow: 0 3px 7px 0 rgba(110, 112, 114, 0.21);
 `;
 
-const Link1 = styled.div`
+const Div1 = styled.div`
   font-size: 24px;
   font-weight: bold;
   color: ${gray1};
@@ -42,7 +42,7 @@ const Input = styled.input`
   }
 `;
 
-const Link2 = styled.div`
+const Div2 = styled.div`
   font-family: ${fontFamily};
   font-size: ${fontSize};
   padding: 5px 10px;
@@ -58,23 +58,42 @@ const Link2 = styled.div`
   }
 `;
 
-export const Header = () => {
+export const Header: FC<RouteComponentProps> = ({ history, location }) => {
+  const searchParams = new URLSearchParams(location.search);
+  const criteria = searchParams.get('criteria') || '';
+
+  const [search, setSearch] = useState(criteria);
+
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.currentTarget.value);
+    setSearch(e.currentTarget.value);
+  };
+
+  const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    history.push(`/search?criteria=${search}`);
   };
 
   return (
     <Div>
-      <Link1>
-        <Link to="/">Q & A</Link>
-      </Link1>
-      <Input type="text" placeholder="Search..." onChange={handleSearchInputChange} />
-      <Link2>
-        <Link to="/signin">
+      <Link to="/">
+        <Div1>Q & A</Div1>
+      </Link>
+      <form onSubmit={handleSearchSubmit}>
+        <Input
+          type="text"
+          placeholder="Search..."
+          value={search}
+          onChange={handleSearchInputChange}
+        />
+      </form>
+      <Link to="/signin">
+        <Div2>
           <UserIcon />
           <span>Sign In</span>
-        </Link>
-      </Link2>
+        </Div2>
+      </Link>
     </Div>
   );
 };
+
+export const HeaderWithRouter = withRouter(Header);
