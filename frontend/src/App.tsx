@@ -3,13 +3,16 @@ import styled from '@emotion/styled';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 
 import { HeaderWithRouter as Header } from './components/Header';
-import { HomePage } from './components/HomePage';
+import HomePage from './components/HomePage';
 import { fontFamily, fontSize, gray2 } from './components/Styles';
 
 import { SearchPage } from './components/SearchPage';
 import { SignInPage } from './components/SignInPage';
 import { NotFoundPage } from './components/NotFoundPage';
 import { QuestionPage } from './components/QuestionPage';
+
+import { Provider } from 'react-redux';
+import { configureStore } from './reduxState/Store';
 
 const AskPage = lazy(() => import('./components/AskPage'));
 
@@ -24,26 +27,30 @@ const FallBackDiv = styled.div`
   text-align: center;
 `;
 
+const store = configureStore();
+
 function App() {
   return (
-    <BrowserRouter>
-      <Div>
-        <Header />
-        <Switch>
-          <Redirect from="/home" to="/" />
-          <Route exact path="/" component={HomePage} />
-          <Route path="/search" component={SearchPage} />
-          <Route path="/ask">
-            <Suspense fallback={<FallBackDiv>Loading...</FallBackDiv>}>
-              <AskPage />
-            </Suspense>
-          </Route>
-          <Route path="/signin" component={SignInPage} />
-          <Route path="/questions/:questionId" component={QuestionPage} />
-          <Route component={NotFoundPage} />
-        </Switch>
-      </Div>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Div>
+          <Header />
+          <Switch>
+            <Redirect from="/home" to="/" />
+            <Route exact path="/" component={HomePage} />
+            <Route path="/search" component={SearchPage} />
+            <Route path="/ask">
+              <Suspense fallback={<FallBackDiv>Loading...</FallBackDiv>}>
+                <AskPage />
+              </Suspense>
+            </Route>
+            <Route path="/signin" component={SignInPage} />
+            <Route path="/questions/:questionId" component={QuestionPage} />
+            <Route component={NotFoundPage} />
+          </Switch>
+        </Div>
+      </BrowserRouter>
+    </Provider>
   );
 }
 

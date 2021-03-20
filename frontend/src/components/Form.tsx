@@ -50,9 +50,10 @@ export interface SubmitResult {
 interface Props {
   submitCaption?: string;
   validationRules?: ValidationProp;
-  onSubmit: (values: Values) => Promise<SubmitResult>;
+  onSubmit: (values: Values) => Promise<SubmitResult> | void;
   successMessage?: string;
   failureMessage?: string;
+  submitResult?: SubmitResult;
 }
 
 const FieldSet1 = styled.fieldset`
@@ -76,6 +77,7 @@ export const Form: FC<Props> = ({
   children,
   validationRules,
   onSubmit,
+  submitResult,
   successMessage = 'Success!',
   failureMessage = 'Something went wrong',
 }) => {
@@ -114,6 +116,11 @@ export const Form: FC<Props> = ({
       setSubmitting(true);
       setSubmitError(false);
       const result = await onSubmit(values);
+
+      if (result === undefined) {
+        return;
+      }
+
       setErrors(result.errors || {});
       setSubmitError(!result.success);
       setSubmitting(false);
@@ -138,6 +145,12 @@ export const Form: FC<Props> = ({
     return !haveError;
   };
 
+  const disabled = submitResult ? submitResult.success : submitting || (submitted && !submitError);
+
+  const showError = submitResult ? !submitResult.success : submitted && submitError;
+
+  const showSuccess = submitResult ? submitResult.success : submitted && !submitError;
+
   return (
     <FormContext.Provider
       value={{
@@ -153,13 +166,13 @@ export const Form: FC<Props> = ({
         },
       }}>
       <form noValidate={true} onSubmit={handleSubmit}>
-        <FieldSet1 disabled={submitting || (submitted && !submitError)}>
+        <FieldSet1 disabled={disabled}>
           {children}
           <Div1>
             <PrimaryButton type="submit">{submitCaption}</PrimaryButton>
           </Div1>
-          {submitted && submitError && <p style={{ color: 'red' }}>{failureMessage}</p>}
-          {submitted && !submitError && <p style={{ color: 'green' }}>{successMessage}</p>}
+          {showError && <p style={{ color: 'red' }}>{failureMessage}</p>}
+          {showSuccess && <p style={{ color: 'green' }}>{successMessage}</p>}
         </FieldSet1>
       </form>
     </FormContext.Provider>
