@@ -1,4 +1,4 @@
-import React, { FC, useState, createContext, useEffect, FormEvent } from 'react';
+import React, { FC, useState, createContext, FormEvent } from 'react';
 import { PrimaryButton, gray5, gray6 } from './Styles';
 import styled from '@emotion/styled';
 

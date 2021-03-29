@@ -1,11 +1,12 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import styled from '@emotion/styled';
 import { RouteComponentProps } from 'react-router-dom';
+import { useAuth } from './Auth';
 
 import { QuestionList } from './QuestionList';
 import { Page } from './Page';
 import { PageTitle } from './PageTitle';
-import { QuestionData } from '../QuestionsData';
+import { getUnansweredQuestions, QuestionData } from '../QuestionsData';
 
 import { PrimaryButton } from './Styles';
 
@@ -32,22 +33,38 @@ interface Props extends RouteComponentProps {
   questionsLoading: boolean;
 }
 
-const HomePage: FC<Props> = ({ history, questions, questionsLoading, getUnansweredQuestions }) => {
+const HomePage: FC<Props> = ({ history }) => {
+  const [questions, setQuestions] = useState<QuestionData[] | null>(null);
+  const [questionsLoading, setQuestionsLoading] = useState(true);
+
   useEffect(() => {
-    if (questions === null) {
-      getUnansweredQuestions();
-    }
-  }, [questions, getUnansweredQuestions]);
+    let cancelled = false;
+    const doGetUnansweredQuestions = async () => {
+      const unansweredQuestions = await getUnansweredQuestions();
+      if (!cancelled) {
+        setQuestions(unansweredQuestions);
+        setQuestionsLoading(false);
+      }
+    };
+    doGetUnansweredQuestions();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleAskQuestionClick = () => {
     history.push('/ask');
   };
 
+  const { isAuthenticated } = useAuth();
+
   return (
     <Page>
       <Div2>
         <PageTitle>Unanswered Questions</PageTitle>
-        <PrimaryButton onClick={handleAskQuestionClick}>Ask a question</PrimaryButton>
+        {isAuthenticated && (
+          <PrimaryButton onClick={handleAskQuestionClick}>Ask a question</PrimaryButton>
+        )}
       </Div2>
       {questionsLoading ? (
         <DivQuestionLoading>Loading...</DivQuestionLoading>

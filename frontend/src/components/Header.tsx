@@ -5,6 +5,8 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { UserIcon } from './Icons';
 import { fontFamily, fontSize, gray1, gray2, gray5 } from './Styles';
 
+import { useAuth } from './Auth';
+
 const Div = styled.div`
   position: fixed;
   box-sizing: border-box;
@@ -73,6 +75,8 @@ export const Header: FC<RouteComponentProps> = ({ history, location }) => {
     history.push(`/search?criteria=${search}`);
   };
 
+  const { user, isAuthenticated, loading } = useAuth();
+
   return (
     <Div>
       <Link to="/">
@@ -86,12 +90,23 @@ export const Header: FC<RouteComponentProps> = ({ history, location }) => {
           onChange={handleSearchInputChange}
         />
       </form>
-      <Link to="/signin">
-        <Div2>
-          <UserIcon />
-          <span>Sign In</span>
-        </Div2>
-      </Link>
+      <Div2>
+        {!loading &&
+          (isAuthenticated ? (
+            <div>
+              <span>{user!.name}</span>
+              <Link to={{ pathname: '/signout', state: { local: true } }}>
+                <UserIcon />
+                <span>Sign Out</span>
+              </Link>
+            </div>
+          ) : (
+            <Link to="/signin">
+              <UserIcon />
+              <span>Sign In</span>
+            </Link>
+          ))}
+      </Div2>
     </Div>
   );
 };
