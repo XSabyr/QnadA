@@ -33,7 +33,7 @@ interface Props extends RouteComponentProps {
   questionsLoading: boolean;
 }
 
-const HomePage: FC<Props> = ({ history }) => {
+export const HomePage: FC<RouteComponentProps> = ({ history }) => {
   const [questions, setQuestions] = useState<QuestionData[] | null>(null);
   const [questionsLoading, setQuestionsLoading] = useState(true);
 
